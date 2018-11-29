@@ -1,0 +1,43 @@
+{
+  "name": "imarcom/laravel-changelog",
+  "description": "A Laravel 5 package to create change-logs",
+  "keywords": [
+    "imarcom",
+    "change-logs",
+    "laravel"
+  ],
+  "homepage": "https://github.com/imarcom/laravel-backup",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Leandre Manseau Martineau",
+      "email": "l.martineau@imarcom.com",
+      "homepage": "https://www.imarcom.net",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^7.1",
+    "laravel/framework": "~5.5.0",
+    "phpunit/phpunit": "^6.2"
+  },
+  "require-dev": {
+    "orchestra/testbench": "3.5.*",
+    "phpunit/phpunit": "^6.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Imarcom\\ChangeLog\\": "src"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Imarcom\\ChangeLog\\ChangeLogServiceProvider"
+      ]
+    }
+  }
+}
