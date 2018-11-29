@@ -14,9 +14,9 @@ class BackupCommandTest extends TestCase
         return [ChangeLogServiceProvider::class];
     }
 
-    /** @test */
-    public function can_generate_changelog()
+    protected function getEnvironmentSetUp($app)
     {
+        Storage::fake('local');
         config([
             'changelog.last_version_date' => Carbon::minValue(),
             'changelog.location.in' => __DIR__.'/../files/changelog',
@@ -25,9 +25,13 @@ class BackupCommandTest extends TestCase
                 'file' => 'CHANGELOG.md'
             ]
         ]);
+        parent::getEnvironmentSetUp($app);
+    }
 
-        Storage::fake('local');
 
+    /** @test */
+    public function can_generate_changelog()
+    {
         $resultCode = Artisan::call('changelog:generate');
         $this->assertEquals(0, $resultCode);
 
@@ -37,17 +41,6 @@ class BackupCommandTest extends TestCase
     /** @test */
     public function can_get_changelog()
     {
-        config([
-            'changelog.last_version_date' => Carbon::minValue(),
-            'changelog.location.in' => __DIR__.'/../files/changelog',
-            'changelog.location.out' => [
-                'disk' => 'local',
-                'file' => 'CHANGELOG.md'
-            ]
-        ]);
-
-        Storage::fake('local');
-
         Artisan::call('changelog:get');
         $this->assertEquals("CHANGED\r
 - some thing\r

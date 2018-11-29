@@ -6,8 +6,11 @@ use Imarcom\ChangeLog\Commands\GetChangeLogCommand;
 
 class ChangeLogServiceProvider extends ServiceProvider
 {
+    use HasChangeLogs;
+
     public function boot()
     {
+        $this->app->singleton(ChangeLogReader::class);
         $this->publishes([
             __DIR__.'/../config/changelog.php' => config_path('changelog.php'),
         ], 'config');
@@ -18,10 +21,10 @@ class ChangeLogServiceProvider extends ServiceProvider
         ]);
 
         $this->loadViewsFrom(__DIR__.'/resources/views', 'laravel_changelog');
+        $this->addChangeLogsFrom(config('changelog.location.in'));
     }
 
     public function register()
     {
-
     }
 }

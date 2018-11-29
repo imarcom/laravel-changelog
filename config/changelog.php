@@ -4,7 +4,7 @@ return [
     'location' => [
         'out' => [
             'disk' => null,
-            'file' => 'CHANGELOG.md'
+            'file' => base_path('CHANGELOG.md')
         ],
         'in' => 'changelog'
     ]
