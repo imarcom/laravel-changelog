@@ -6,10 +6,10 @@ use Illuminate\Database\Console\Migrations\BaseCommand;
 use Illuminate\Support\Facades\Storage;
 use Imarcom\ChangeLog\ChangeLogReader;
 
-class GenerateChangeLogCommand extends BaseCommand
+class GetChangeLogCommand extends BaseCommand
 {
     /** @var string */
-    protected $signature = 'changelog:generate';
+    protected $signature = 'changelog:get';
     /** @var string */
     protected $description = 'Update the changelog file.';
 
@@ -24,14 +24,12 @@ class GenerateChangeLogCommand extends BaseCommand
     public function handle()
     {
        $changes = $this->changeLogReader->getChanges();
-       $disk = config('changelog.location.out.disk');
-       $filename = config('changelog.location.out.file');
-       $contents = view('laravel_changelog::changelog',['changes' => $changes]);
-       if($disk){
-           Storage::disk($disk)->put($filename,$contents);
-       }else{
-           file_put_contents($filename, $contents);
-       }
+        foreach ($changes as $type => $typeChanges){
+            $this->line(strtoupper($type));
+            foreach ($typeChanges as $change){
+                $this->line($change);
+            }
+        }
     }
 
 }
