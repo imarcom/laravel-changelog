@@ -1,4 +1,4 @@
-#Laravel ChangeLog
+# Laravel ChangeLog
 A Laravel 5 package to create change-logs.
 
 ## Installation
