@@ -11,9 +11,10 @@ class ChangeLogServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app->singleton(ChangeLogReader::class);
-        $this->publishes([
-            __DIR__.'/../config/changelog.php' => config_path('changelog.php'),
-        ], 'config');
+
+        $configPath = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'changelog.php';
+        $this->publishes([$configPath => config_path('changelog.php')]);
+        $this->mergeConfigFrom($configPath, 'changelog');
 
         $this->commands([
             GenerateChangeLogCommand::class,
