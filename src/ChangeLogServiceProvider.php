@@ -21,7 +21,7 @@ class ChangeLogServiceProvider extends ServiceProvider
         ]);
 
         $this->loadViewsFrom(__DIR__.'/resources/views', 'laravel_changelog');
-        $this->addChangeLogsFrom(config('changelog.location.in'));
+        $this->addChangeLogsFrom(config('changelog.location.in','changelog'));
     }
 
     public function register()

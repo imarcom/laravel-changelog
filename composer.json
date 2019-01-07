@@ -6,7 +6,7 @@
     "change-logs",
     "laravel"
   ],
-  "homepage": "https://github.com/imarcom/laravel-backup",
+  "homepage": "https://github.com/imarcom/laravel-changelog",
   "license": "MIT",
   "version": "0.0.1",
   "authors": [
@@ -28,7 +28,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Imarcom\\ChangeLog\\": "src"
+      "Imarcom\\ChangeLog\\": "src/"
     }
   },
   "scripts": {
