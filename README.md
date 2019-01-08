@@ -1,5 +1,7 @@
 # Laravel ChangeLog
-A Laravel 5 package to create change-logs.
+A Laravel 5 package to create markdown change-logs.
+
+This allow to create individual changelog files which will be merged into a single file or even outputted in console or in application code for display.
 
 ## Installation
 
@@ -38,7 +40,41 @@ return [
 ];
 ```
 
+### Using multiple changelog directories
+You can register additional directories in providers by using the **Imarcom\ChangeLogs\HasChangeLogs** trait.
+```php
+<?php
+class MyServiceProvider extends ServiceProvider
+{
+    use \Imarcom\ChangeLog\HasChangeLogs;
+
+    public function boot()
+    {
+        //...
+        $this->addChangeLogsFrom('my/custom/directory');
+    }
+}
+```
+While developing packages, this allow to use a directory for your package which will be used upon registration of the provider.
+
+
 ## Usage
+### Writing Change-logs
+When you make changes to your application. Add a file into your **changelog** directory as configured. This file should be named with this pattern : **YYYYMMDD_some_file_name.md**
+
+Write it like a standalone change-log like :
+
+```markdown
+## CHANGED
+- some thing
+- another thing
+
+## ADDED
+- some thing
+```
+
+### Creating ChangeLogs
+When creating change-logs, all change-logs from registered directories will be merged together into a single change-log by regrouping lines under the same headers together.
 
 Generating the changeLog file.
 
