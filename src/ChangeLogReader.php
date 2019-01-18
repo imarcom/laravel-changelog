@@ -8,37 +8,55 @@ use Illuminate\Support\Facades\Storage;
 
 class ChangeLogReader
 {
-    protected $directories;
+    protected $directories = [];
 
     protected $changes;
 
     /**
      * Get changes from changelogs
      *
-     * @param Carbon|null $date Changelog before this date will be omitted. If not set, configuration value will be used.
+     * @param array $tags tagged lines to show
      * @return Collection
      */
-    public function getChanges(Carbon $date = null) : Collection{
+    public function getChanges(array $tags = []) : Collection{
         if(!$this->changes){
-            $changes = collect();
-            /** @var Carbon $minimalDate */
-            $minimalDate = $date ?: config('changelog.last_version_date');
+            $changesByRelease = collect([
+                'unreleased' => [
+                    'date' => null,
+                    'changes' => collect()
+                ]
+            ]);
+            $releaseDates = config('changelog.releases',[]);
             foreach ($this->directories as $directory){
                 foreach(scandir($directory) as $file){
-                    $date = Carbon::parse(substr($file, 0,'8'));
-                    if($file !== '.' && $file !== '..' && $minimalDate->lt($date)){
+                    if($file !== '.' && $file !== '..'){
                         $handle = fopen($directory.DIRECTORY_SEPARATOR.$file, 'r');
                         if($handle){
+                            $release = $this->getRelease(Carbon::parse(substr($file, 0,'8')));
                             $changeType = '';
                             while (($line = fgets($handle)) !== false){
                                 $line = $this->cleanLine($line);
-                                if(starts_with($line, ['#'])){
-                                    $changeType = strtolower(trim($line,'# '));
-                                }else if($line){
-                                    if(!$changes->has($changeType)){
-                                        $changes->put($changeType,collect());
+                                if(starts_with($line, ['#'])) {
+                                    $changeType = strtolower(trim($line, '# '));
+                                }
+                                else if($line){
+                                    preg_match_all('/\[(.+)]$/', $line, $matches, PREG_SET_ORDER, 0);
+                                    if($matches){
+                                        if(!in_array($matches[0][1], $tags)){
+                                            continue; //Skip tagged lines which are not requested.
+                                        }
+                                        $line = preg_replace('/\[.+]$/', '', $line); //hide tags
                                     }
-                                    $changes[$changeType]->push($line);
+                                    if(!$changesByRelease->has($release)){
+                                        $changesByRelease->put($release,[
+                                            'date' => array_get($releaseDates,$release),
+                                            'changes' => collect()
+                                        ]);
+                                    }
+                                    if(!$changesByRelease[$release]['changes']->has($changeType)){
+                                        $changesByRelease[$release]['changes']->put($changeType,collect());
+                                    }
+                                    $changesByRelease[$release]['changes'][$changeType]->push($line);
                                 }
                             }
                         }
@@ -46,7 +64,10 @@ class ChangeLogReader
                     }
                 }
             }
-            $this->changes = $changes;
+            $changesByRelease = $changesByRelease->sortBy(function($releaseInfo,$release){
+                return $release === 'unreleased' ? Carbon::maxValue() : Carbon::parse($releaseInfo['date']);
+            })->reverse();
+            $this->changes = $changesByRelease;
         }
         return $this->changes;
     }
@@ -61,5 +82,19 @@ class ChangeLogReader
 
     protected function cleanLine(String $line) : String{
         return trim(preg_replace('/\s+/', ' ', $line));
+    }
+
+    protected function getRelease(Carbon $changeDate) : String{
+        $releases = collect(config('changelog.releases',[]))->map(function ($date) {
+            return Carbon::parse($date);
+        })->sort();
+        $changeRelease = 'unreleased';
+        foreach ($releases as $release => $releaseDate){
+            if($changeDate->lessThanOrEqualTo($releaseDate)){
+                $changeRelease = $release;
+                break;
+            }
+        }
+        return $changeRelease;
     }
 }
