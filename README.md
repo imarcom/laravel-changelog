@@ -109,6 +109,12 @@ You may want to add some lines which should not be always visible. For this, you
 - Something for devs only [dev_only]
 ```
 
+#### Annotating changes
+You may want to know information form the file which the change came from. In that case you can annotate your changes and the information from the file will be shown. For instance, if you name your file *20190614_JIRA-123.md* then all the changes (if annotated) will be displayed like this:
+```markdown
+- some change [JIRA-123]
+```
+
 ### Creating ChangeLogs
 When creating change-logs, all change-logs from registered directories will be merged together into a single change-log by regrouping lines under the same headers together.
 
@@ -145,6 +151,11 @@ php artisan <command> --tagged
 display tags on tagged lines
 ```bash
 php artisan <command> --showtags
+```
+
+annotate lines
+```bash
+php artisan <command> --annotate
 ```
 
 

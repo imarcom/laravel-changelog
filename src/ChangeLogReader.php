@@ -17,15 +17,17 @@ class ChangeLogReader
      *
      * @param array $tags         tagged lines to show
      * @param bool  $skipUntagged if the untagged lines should be shown
-     * @param bool  $allTags display all tags
-     * @param bool  $showTags display tags on tagges lines
+     * @param bool  $allTags      display all tags
+     * @param bool  $showTags     display tags on tagges lines
+     * @param bool  $annotate     show file name information next to lines.
      * @return Collection
      */
     public function getChanges(
         array $tags = [],
         bool $skipUntagged = false,
         bool $allTags = false,
-        bool $showTags = false
+        bool $showTags = false,
+        bool $annotate = false
 ) : Collection{
         if(!$this->changes){
             $changesByRelease = collect([
@@ -39,8 +41,9 @@ class ChangeLogReader
                 foreach(scandir($directory) as $file){
                     if($file !== '.' && $file !== '..'){
                         $handle = fopen($directory.DIRECTORY_SEPARATOR.$file, 'r');
+                        preg_match('/\d{8}_(.+)\.md/', $file,$annotationMatches);
                         if($handle){
-                            $release = $this->getRelease(Carbon::parse(substr($file, 0,'8')));
+                            $release = $this->getRelease(Carbon::parse(substr($file, 0,8)));
                             $changeType = '';
                             while (($line = fgets($handle)) !== false){
                                 $line = $this->cleanLine($line);
@@ -67,6 +70,9 @@ class ChangeLogReader
                                     }
                                     if(!$changesByRelease[$release]['changes']->has($changeType)){
                                         $changesByRelease[$release]['changes']->put($changeType,collect());
+                                    }
+                                    if($annotate && $annotationMatches){
+                                        $line .=' ['.$annotationMatches[1].']';
                                     }
                                     $changesByRelease[$release]['changes'][$changeType]->push($line);
                                 }

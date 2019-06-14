@@ -9,7 +9,7 @@ use Imarcom\ChangeLog\ChangeLogReader;
 class GenerateChangeLogCommand extends BaseCommand
 {
     /** @var string */
-    protected $signature = 'changelog:generate {--tags=} {--t|tagged} {--at|alltags} {--st|showtags}';
+    protected $signature = 'changelog:generate {--tags=} {--t|tagged} {--at|alltags} {--st|showtags} {--an|annotate}';
     /** @var string */
     protected $description = 'Update the changelog file.';
 
@@ -27,7 +27,8 @@ class GenerateChangeLogCommand extends BaseCommand
            explode(',',$this->option('tags'))?:[],
            $this->option('tagged'),
            $this->option('alltags'),
-           $this->option('showtags')
+           $this->option('showtags'),
+           $this->option('annotate')
        );
        $disk = config('changelog.location.out.disk');
        $filename = config('changelog.location.out.file');

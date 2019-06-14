@@ -215,4 +215,31 @@ ADDED\r
 ",
             Artisan::output());
     }
+
+    /** @test */
+    public function can_annotate_lines()
+    {
+        /** ACT */
+        Artisan::call('changelog:get',['--annotate'=>1]);
+
+        /** ASSERT */
+        $this->assertEquals("[Unreleased]\r
+ADDED\r
+- some new thing [newest_things]\r
+\r
+[1.0.1] - 2018-11-25\r
+CHANGED\r
+- some thing [do_some_things]\r
+- another thing [do_some_things]\r
+ADDED\r
+- some thing [do_some_things]\r
+- some thing again [do_some_things]\r
+\r
+[1.0.0] - 2018-01-01\r
+ADDED\r
+- some old thing [older_things]\r
+\r
+",
+            Artisan::output());
+    }
 }
