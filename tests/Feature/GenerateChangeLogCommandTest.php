@@ -116,6 +116,63 @@ ADDED\r
     }
 
     /** @test */
+    public function can_get_changelog_with_all_tags()
+    {
+        /** ACT */
+        Artisan::call('changelog:get',['--alltags'=>1]);
+
+        /** ASSERT */
+        $this->assertEquals("[Unreleased]\r
+ADDED\r
+- some new thing\r
+\r
+[1.0.1] - 2018-11-25\r
+CHANGED\r
+- some thing\r
+- another thing\r
+- something secret \r
+- something mega secret \r
+ADDED\r
+- some thing\r
+- some thing again\r
+\r
+[1.0.0] - 2018-01-01\r
+ADDED\r
+- some old thing\r
+\r
+",
+            Artisan::output());
+    }
+
+    /** @test */
+    public function can_get_changelog_with_visible_tags()
+    {
+        /** ACT */
+        Artisan::call('changelog:get',['--tags'=>'internal','--showtags' => 1]);
+
+        /** ASSERT */
+        $this->assertEquals("[Unreleased]\r
+ADDED\r
+- some new thing\r
+\r
+[1.0.1] - 2018-11-25\r
+CHANGED\r
+- some thing\r
+- another thing\r
+- something secret [internal]\r
+ADDED\r
+- some thing\r
+- some thing again\r
+\r
+[1.0.0] - 2018-01-01\r
+ADDED\r
+- some old thing\r
+\r
+",
+            Artisan::output());
+    }
+
+    /** @test */
     public function can_get_only_changelog_with_tags()
     {
         /** ACT */

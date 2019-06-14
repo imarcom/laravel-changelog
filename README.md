@@ -125,34 +125,37 @@ Reading changelog from console without saving it to file.
 php artisan changelog:get
 ```
 
+#### Arguments
 In both cases, the arguments are the same:
 
-with tags (all lines + specified tags)
+all tags
+```bash
+php artisan <command> --alltags
+```
+with specific tags
 ```bash
 php artisan <command> --tags=tag1,tag2,tag3
 ```
-only tagged changes
+
+only tagged changes (combine with --tags or --alltags)
 ```bash
-php artisan <command> --tags=tag1,tag2,tag3 --tagged
+php artisan <command> --tagged
+```
+
+display tags on tagged lines
+```bash
+php artisan <command> --showtags
 ```
 
 
 Retrieving changes as array.
+You may access any behavior described for commands by using parameters.
 
 ```php
 <?php
 $changes = app(\Imarcom\ChangeLog\ChangeLogReader::class)->getChanges();
 ```
-with tags
-```php
-<?php
-$changes = app(\Imarcom\ChangeLog\ChangeLogReader::class)->getChanges(['tag1','tag2','tag3']);
-```
-skipping untagged lines
-```php
-<?php
-$changes = app(\Imarcom\ChangeLog\ChangeLogReader::class)->getChanges(['tag1','tag2','tag3'],true);
-```
+
 
 ## Testing
 

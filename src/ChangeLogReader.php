@@ -15,11 +15,18 @@ class ChangeLogReader
     /**
      * Get changes from changelogs
      *
-     * @param array $tags tagged lines to show
+     * @param array $tags         tagged lines to show
      * @param bool  $skipUntagged if the untagged lines should be shown
+     * @param bool  $allTags display all tags
+     * @param bool  $showTags display tags on tagges lines
      * @return Collection
      */
-    public function getChanges(array $tags = [],bool $skipUntagged = false) : Collection{
+    public function getChanges(
+        array $tags = [],
+        bool $skipUntagged = false,
+        bool $allTags = false,
+        bool $showTags = false
+) : Collection{
         if(!$this->changes){
             $changesByRelease = collect([
                 'unreleased' => [
@@ -43,10 +50,12 @@ class ChangeLogReader
                                 else if($line){
                                     preg_match_all('/\[(.+)]$/', $line, $matches, PREG_SET_ORDER, 0);
                                     if($matches){
-                                        if(!in_array($matches[0][1], $tags)){
+                                        if(!$allTags && !in_array($matches[0][1], $tags)){
                                             continue; //Skip tagged lines which are not requested.
                                         }
-                                        $line = preg_replace('/\[.+]$/', '', $line); //hide tags
+                                        if(!$showTags){
+                                            $line = preg_replace('/\[.+]$/', '', $line); //hide tags
+                                        }
                                     }elseif ($skipUntagged){
                                         continue; //Skip untagged lines if requested.
                                     }

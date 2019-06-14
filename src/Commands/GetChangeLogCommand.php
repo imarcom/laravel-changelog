@@ -9,7 +9,7 @@ use Imarcom\ChangeLog\ChangeLogReader;
 class GetChangeLogCommand extends BaseCommand
 {
     /** @var string */
-    protected $signature = 'changelog:get {--tags=} {--tagged}';
+    protected $signature = 'changelog:get {--tags=} {--t|tagged} {--at|alltags} {--st|showtags}';
     /** @var string */
     protected $description = 'Update the changelog file.';
 
@@ -23,7 +23,12 @@ class GetChangeLogCommand extends BaseCommand
 
     public function handle()
     {
-        $changes = $this->changeLogReader->getChanges(explode(',',$this->option('tags'))?:[],$this->option('tagged'));
+        $changes = $this->changeLogReader->getChanges(
+            explode(',',$this->option('tags'))?:[],
+            $this->option('tagged'),
+            $this->option('alltags'),
+            $this->option('showtags')
+        );
         foreach ($changes as $release => $releaseInfo){
             $this->line('['.ucfirst($release).']'.($releaseInfo['date']?' - '.$releaseInfo['date']:''));
             foreach ($releaseInfo['changes'] as $type => $changes){
