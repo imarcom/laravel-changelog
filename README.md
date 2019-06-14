@@ -104,13 +104,13 @@ Write it like a standalone change-log like :
 ```
 
 #### Hiding content with tags
-You may want to add some lines which should not be always visible. For this, you can add *[TAG]* at the end of the line. This line will not be output when generating changelogs if the tag has not been requested.
+You may want to add some lines which should not be always visible. For this, you can add **[TAG]** at the end of the line. This line will not be output when generating changelogs if the tag has not been requested.
 ```markdown
 - Something for devs only [dev_only]
 ```
 
 #### Annotating changes
-You may want to know information form the file which the change came from. In that case you can annotate your changes and the information from the file will be shown. For instance, if you name your file *20190614_JIRA-123.md* then all the changes (if annotated) will be displayed like this:
+You may want to know information form the file which the change came from. In that case you can annotate your changes and the information from the file will be shown. For instance, if you name your file **20190614_JIRA-123.md** then all the changes (if annotated) will be displayed like this:
 ```markdown
 - some change [JIRA-123]
 ```
