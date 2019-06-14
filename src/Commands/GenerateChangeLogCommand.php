@@ -9,7 +9,7 @@ use Imarcom\ChangeLog\ChangeLogReader;
 class GenerateChangeLogCommand extends BaseCommand
 {
     /** @var string */
-    protected $signature = 'changelog:generate {--tags=}';
+    protected $signature = 'changelog:generate {--tags=} {--tagged}';
     /** @var string */
     protected $description = 'Update the changelog file.';
 
@@ -23,7 +23,7 @@ class GenerateChangeLogCommand extends BaseCommand
 
     public function handle()
     {
-       $changes = $this->changeLogReader->getChanges(explode(',',$this->option('tags'))?:[]);
+       $changes = $this->changeLogReader->getChanges(explode(',',$this->option('tags'))?:[],$this->option('tagged'));
        $disk = config('changelog.location.out.disk');
        $filename = config('changelog.location.out.file');
        $contents = view('laravel_changelog::changelog',['releases' => $changes]);

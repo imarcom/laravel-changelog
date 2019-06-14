@@ -16,9 +16,10 @@ class ChangeLogReader
      * Get changes from changelogs
      *
      * @param array $tags tagged lines to show
+     * @param bool  $skipUntagged if the untagged lines should be shown
      * @return Collection
      */
-    public function getChanges(array $tags = []) : Collection{
+    public function getChanges(array $tags = [],bool $skipUntagged = false) : Collection{
         if(!$this->changes){
             $changesByRelease = collect([
                 'unreleased' => [
@@ -46,6 +47,8 @@ class ChangeLogReader
                                             continue; //Skip tagged lines which are not requested.
                                         }
                                         $line = preg_replace('/\[.+]$/', '', $line); //hide tags
+                                    }elseif ($skipUntagged){
+                                        continue; //Skip untagged lines if requested.
                                     }
                                     if(!$changesByRelease->has($release)){
                                         $changesByRelease->put($release,[
@@ -78,6 +81,11 @@ class ChangeLogReader
                     ]
                 ];
                 $changesByRelease[$firstReleaseVersion] = $firstRelease;
+            }
+
+            //Remove empty unreleased tag.
+            if($changesByRelease['unreleased']['changes']->isEmpty()){
+                unset($changesByRelease['unreleased']);
             }
 
             $this->changes = $changesByRelease;

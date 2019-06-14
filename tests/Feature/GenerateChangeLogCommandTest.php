@@ -116,6 +116,21 @@ ADDED\r
     }
 
     /** @test */
+    public function can_get_only_changelog_with_tags()
+    {
+        /** ACT */
+        Artisan::call('changelog:get',['--tags'=>'internal' ,'--tagged' => 1]);
+
+        /** ASSERT */
+        $this->assertEquals("[1.0.1] - 2018-11-25\r
+CHANGED\r
+- something secret \r
+\r
+",
+            Artisan::output());
+    }
+
+    /** @test */
     public function can_hide_changes_prior_to_first_version()
     {
         /** ARRANGE */

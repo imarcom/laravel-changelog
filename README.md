@@ -117,10 +117,6 @@ Generating the changeLog file.
 ```bash
 php artisan changelog:generate
 ```
-with tags
-```bash
-php artisan changelog:generate --tags=tag1,tag2,tag3
-```
 
 
 Reading changelog from console without saving it to file.
@@ -128,9 +124,16 @@ Reading changelog from console without saving it to file.
 ```bash
 php artisan changelog:get
 ```
-with tags
+
+In both cases, the arguments are the same:
+
+with tags (all lines + specified tags)
 ```bash
-php artisan changelog:get --tags=tag1,tag2,tag3
+php artisan <command> --tags=tag1,tag2,tag3
+```
+only tagged changes
+```bash
+php artisan <command> --tags=tag1,tag2,tag3 --tagged
 ```
 
 
@@ -144,6 +147,11 @@ with tags
 ```php
 <?php
 $changes = app(\Imarcom\ChangeLog\ChangeLogReader::class)->getChanges(['tag1','tag2','tag3']);
+```
+skipping untagged lines
+```php
+<?php
+$changes = app(\Imarcom\ChangeLog\ChangeLogReader::class)->getChanges(['tag1','tag2','tag3'],true);
 ```
 
 ## Testing
