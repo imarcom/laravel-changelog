@@ -56,9 +56,16 @@ return [
         'out' => [
             //You can specify a storage disk, if none is selected, it will but put locally at the set path.
             'disk' => null,
-            //The path and name of the output changelog file. If a disk is selected, this will be retrived on the disk.
+            //The path and name of the output changelog file. If a disk is selected, this will be retrieved on the disk.
             'file' => base_path('CHANGELOG.md')
         ]
+    ],
+    //You can choose for the first version if all changes before are shown or if a single message is used instead.
+    'first_version' => [
+        //The message to be shown instead of the first version changes
+        'message' => '- First release',
+        //If this is set to false, the message will be used instead of showing changes for the first version.
+        'display_changes' => false
     ]
 ];
 ```
@@ -97,9 +104,15 @@ Write it like a standalone change-log like :
 ```
 
 #### Hiding content with tags
-You may want to add some lines which should not be always visible. For this, you can add *[TAG]* at the end of the line. This line will not be output when generating changelogs if the tag has not been requested.
+You may want to add some lines which should not be always visible. For this, you can add **[TAG]** at the end of the line. This line will not be output when generating changelogs if the tag has not been requested.
 ```markdown
 - Something for devs only [dev_only]
+```
+
+#### Annotating changes
+You may want to know information form the file which the change came from. In that case you can annotate your changes and the information from the file will be shown. For instance, if you name your file **20190614_JIRA-123.md** then all the changes (if annotated) will be displayed like this:
+```markdown
+- some change [JIRA-123]
 ```
 
 ### Creating ChangeLogs
@@ -110,10 +123,6 @@ Generating the changeLog file.
 ```bash
 php artisan changelog:generate
 ```
-with tags
-```bash
-php artisan changelog:generate --tags=tag1,tag2,tag3
-```
 
 
 Reading changelog from console without saving it to file.
@@ -121,23 +130,43 @@ Reading changelog from console without saving it to file.
 ```bash
 php artisan changelog:get
 ```
-with tags
+
+#### Arguments
+In both cases, the arguments are the same:
+
+all tags
 ```bash
-php artisan changelog:get --tags=tag1,tag2,tag3
+php artisan <command> --alltags
+```
+with specific tags
+```bash
+php artisan <command> --tags=tag1,tag2,tag3
+```
+
+only tagged changes (combine with --tags or --alltags)
+```bash
+php artisan <command> --tagged
+```
+
+display tags on tagged lines
+```bash
+php artisan <command> --showtags
+```
+
+annotate lines
+```bash
+php artisan <command> --annotate
 ```
 
 
 Retrieving changes as array.
+You may access any behavior described for commands by using parameters.
 
 ```php
 <?php
 $changes = app(\Imarcom\ChangeLog\ChangeLogReader::class)->getChanges();
 ```
-with tags
-```php
-<?php
-$changes = app(\Imarcom\ChangeLog\ChangeLogReader::class)->getChanges(['tag1','tag2','tag3']);
-```
+
 
 ## Testing
 
