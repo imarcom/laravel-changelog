@@ -56,9 +56,16 @@ return [
         'out' => [
             //You can specify a storage disk, if none is selected, it will but put locally at the set path.
             'disk' => null,
-            //The path and name of the output changelog file. If a disk is selected, this will be retrived on the disk.
+            //The path and name of the output changelog file. If a disk is selected, this will be retrieved on the disk.
             'file' => base_path('CHANGELOG.md')
         ]
+    ],
+    //You can choose for the first version if all changes before are shown or if a single message is used instead.
+    'first_version' => [
+        //The message to be shown instead of the first version changes
+        'message' => '- First release',
+        //If this is set to false, the message will be used instead of showing changes for the first version.
+        'display_changes' => false
     ]
 ];
 ```

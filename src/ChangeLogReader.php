@@ -67,6 +67,19 @@ class ChangeLogReader
             $changesByRelease = $changesByRelease->sortBy(function($releaseInfo,$release){
                 return $release === 'unreleased' ? Carbon::maxValue() : Carbon::parse($releaseInfo['date']);
             })->reverse();
+
+            //Use a message instead of changes for first release if configured so.
+            if($releaseDates && !config('changelog.first_version.display_changes',true)){
+                $firstReleaseVersion = head(array_keys($releaseDates));
+                $firstRelease = $changesByRelease[$firstReleaseVersion];
+                $firstRelease['changes'] = [
+                    '' => [
+                        config('changelog.first_version.message','- First release')
+                    ]
+                ];
+                $changesByRelease[$firstReleaseVersion] = $firstRelease;
+            }
+
             $this->changes = $changesByRelease;
         }
         return $this->changes;

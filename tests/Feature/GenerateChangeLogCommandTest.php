@@ -26,14 +26,22 @@ class GenerateChangeLogCommandTest extends TestCase
     {
         Storage::fake('local');
         config([
-            'changelog.releases' => [
-                '1.0.0' => '2018-01-01',
-                '1.0.1' => '2018-11-25'
+            'changelog' => [
+                'releases' => [
+                    '1.0.0' => '2018-01-01',
+                    '1.0.1' => '2018-11-25'
+                ],
+                'location' => [
+                    'out' => [
+                        'disk' => 'local',
+                        'file' => 'CHANGELOG.md'
+                    ]
+                ],
+                'first_version' => [
+                    'message' => '- First release',
+                    'display_changes' => true
+                ]
             ],
-            'changelog.location.out' => [
-                'disk' => 'local',
-                'file' => 'CHANGELOG.md'
-            ]
         ]);
         parent::getEnvironmentSetUp($app);
     }
@@ -102,6 +110,35 @@ ADDED\r
 [1.0.0] - 2018-01-01\r
 ADDED\r
 - some old thing\r
+\r
+",
+            Artisan::output());
+    }
+
+    /** @test */
+    public function can_hide_changes_prior_to_first_version()
+    {
+        /** ARRANGE */
+        config(['changelog.first_version.display_changes' => false]);
+        /** ACT */
+        Artisan::call('changelog:get');
+
+        /** ASSERT */
+        $this->assertEquals("[Unreleased]\r
+ADDED\r
+- some new thing\r
+\r
+[1.0.1] - 2018-11-25\r
+CHANGED\r
+- some thing\r
+- another thing\r
+ADDED\r
+- some thing\r
+- some thing again\r
+\r
+[1.0.0] - 2018-01-01\r
+\r
+- First release\r
 \r
 ",
             Artisan::output());
